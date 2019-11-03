@@ -1,0 +1,1 @@
+web: gunicorn silk_bookmark.wsgi --log-file -

@@ -1,0 +1,16 @@
+{% extends "silk_bookmarks/base.html" %}
+{% load bootstrap3 %}
+
+{% block content %}
+<div class="silk-theme">
+    <div class="container-fluid">
+        <div class="col-md-5 col-xs-12 sidebar">
+            <div class="scroller">
+                <p><a class="button" href="{% url 'silk_bookmarks:topic' topic.id %}">{{ topic }}</a></p>
+  <p>Edit:</p>
+  <form action="{% url 'silk_bookmarks:edit_entry' entry.id %}" method='post'>
+    {% csrf_token %}
+    {% bootstrap_form form %}
+  <button name='submit' class="button" role="button">Save</button>
+  </form>
+{% endblock content %}

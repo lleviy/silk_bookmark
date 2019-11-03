@@ -1,0 +1,30 @@
+{% extends "silk_bookmarks/base.html" %}
+{% load bootstrap3 %}
+
+{% block header %}
+{% endblock header %}
+
+{% block content %}
+<div class="silk-theme">
+    <div class="container-fluid">
+        <div class="col-md-6 col-xs-12 sidebar">
+            <div class="scroller">
+                <a class="button" href="{% url 'silk_bookmarks:new_topic' %}" role="button">Add a book</a>
+                <div class="list-group">
+                {% for topic in topics%}
+                <a href="{% url 'silk_bookmarks:topic' topic.id %}" class="list-group-item">
+                <dt class="list-group-item-heading">{{ topic }}</dt>
+                <dd class="list-group-item-text">{{ topic.author }}</dd></a>
+                {% empty %}
+                  <li>No topics have been added yet.</li>
+                {% endfor %}
+                </div>
+             </div>
+        </div>
+        
+        <div class="col-md-6 col-xs-12 main">
+            
+        </div>
+        </div>
+</div>
+{% endblock content %}

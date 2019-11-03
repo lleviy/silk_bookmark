@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+{% extends "silk_bookmarks/base.html" %}
+{% load staticfiles %}
+{% block navbar %}
+{% endblock navbar %}
+{% block header %}
+<div class="jumbotron jumbotron-carousel corporate-jumbo" style="background-image: url('/static/site/img/book2.jpg'); height: 690px; ">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-6 col-sm-6">
+          <h1>Silk Bookmark</h1>
+          {% if user.is_authenticated %}
+          <p>You are here as {{user.username}}</p>
+          <a class="button" href="{% url 'silk_bookmarks:topics' %}" role="button">my books</a>
+          {% else %}
+          <p>Don't forget your books</p>
+	  <a class="button" href="{% url 'users:register' %}" role="button">Sign up</a> or <a class="button" href="{% url 'users:login' %}" role="button">Sign in</a>
+    {% endif %}
+  </div>
+        <div class="col-md-6 col-sm-6">
+
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock header %}
+
+{% block content %}
+<div class="silk-intro">
+    <blockquote>"Where, Ben? Where is the world?" "Nowhere," Ben said. "YOU are your world".
+        <footer class="blockquote-footer">Thomas Wolfe, <cite title="Source Title">"Look Homeward Angel"</cite></footer>
+    </blockquote>
+    <li class="divider"></li>
+    <span class="border-top">
+    <p>This is the space for your world.</p>
+  <p>Nothing extra.</p>
+  <p>Add your read books here, take notes, highlight quotes. Come back and never forget. </p></span>
+  </div>
+{% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'site/js/site.js' %}"></script>
+{% endblock scripts %}

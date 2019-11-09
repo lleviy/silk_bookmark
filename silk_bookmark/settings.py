@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 import django_heroku
 import os
+import json
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,24 +22,22 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-import json
-from django.core.exceptions import ImproperlyConfigured
 
-key = os.path.join(BASE_DIR, "secrets.json")
-with open(key) as f:
-    secrets = json.loads(f.read())
+# key = os.path.join(BASE_DIR, "secrets.json")
+# with open(key) as f:
+#     secrets = json.loads(f.read())
 
-def get_secret(setting, secret=secrets):
-    try:
-        return secrets[setting]
-    except KeyError:
-        error_msg = "Set the {} environment variable".format(setting)
-        raise ImproperlyConfigured(error_msg)
+# def get_secret(setting, secret=secrets):
+#     try:
+#         return secrets[setting]
+#     except KeyError:
+#         error_msg = "Set the {} environment variable".format(setting)
+#         raise ImproperlyConfigured(error_msg)
 
-SECRET_KEY = get_secret("SECRET_KEY")
+# SECRET_KEY = get_secret("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # Application definition
 
@@ -48,11 +48,30 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     # Сторонние приложения
     'bootstrap3',
+    'account',
+    'pinax_theme_bootstrap',
+    'bootstrapform',
     # Мои приложения
     'silk_bookmarks',
     'users',
+]
+
+SITE_ID = 1
+
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'silk.bookmark@gmail.com'
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'silk.bookmark@gmail.com'
+EMAIL_HOST_PASSWORD = 'xcassidyrp27'
+THEME_CONTACT_EMAIL = 'silk.bookmark@gmail.com'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'account.auth_backends.EmailAuthenticationBackend',
 ]
 
 MIDDLEWARE = [
@@ -66,6 +85,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #Для аккаунта
+    'account.middleware.LocaleMiddleware', #Автоматическая смена языка в зав-ти от местоположения
+    'account.middleware.TimezoneMiddleware',
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -85,10 +107,17 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                #Для аккаунта
+                'account.context_processors.account',
+                'django.template.context_processors.request',
+                'pinax_theme_bootstrap.context_processors.theme',
             ],
         },
     },
 ]
+
+ACCOUNT_EMAIL_UNIQUE = True
+ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
 
 WSGI_APPLICATION = 'silk_bookmark.wsgi.application'
 

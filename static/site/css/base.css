@@ -3,7 +3,7 @@
 
 body {
     margin: 0;
-    padding: 0;
+    padding-top: 45px;
     font-family: 'Roboto Mono', serif;
     font-size: 18px;
     color: rgb(198, 195, 214);
@@ -116,4 +116,39 @@ a.list-group-item:hover, button.list-group-item:focus, button.list-group-item:ho
 .container-fluid {
     padding-right: 0px;
     padding-left: 0px;
+}
+
+.btn-primary {
+    display: inline-block;
+    padding: 0.35em 1.2em;
+    border: 3px solid #202029;
+    border-radius: 25px;
+    margin: 0 0.3em 0.3em 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-family: 'Roboto Mono',serif;
+    font-weight: 300;
+    color: #b4bccc;
+    background: transparent;
+    text-align: center;
+    transition: all 0.2s;
+    box-shadow: 0px 6px 10px 1px rgba(0,0,0,.8);
+}
+
+legend {
+    color: #8e93d5;
+}
+
+alert-success {
+    color: #3c763d;
+    border-color: #d6e9c6;
+}
+
+.panel-default {
+    border-color: transparent;
+}
+
+.panel {
+    background-color: transparent;
 }

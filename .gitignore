@@ -1,4 +1,9 @@
-ll_env/
+sb_env/
 __pycache__/
+staticfiles/
 *.sqlite3
 secrets.json
+sqldiff.exe
+sqlite3_analyzer.exe
+sqlite3.exe
+mysite.log

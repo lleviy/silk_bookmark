@@ -1,16 +1,45 @@
 {% extends "silk_bookmarks/base.html" %}
 {% load bootstrap3 %}
+{% load staticfiles %}
 
 {% block content %}
-<div class="silk-theme">
+{% if topic.photo_url %}
+<div class="silk-theme" style="background-image: url({{ topic.photo_url }});">
+  {% else %}
+  <div class="silk-theme">
+  {% endif %}
     <div class="container-fluid">
-        <div class="col-md-5 col-xs-12 sidebar">
+        <div class="col-xs-0 col-md-3">
+          </div>
+          <div class="col-xs-12 col-md-6">
             <div class="scroller">
                 <p><a class="button" href="{% url 'silk_bookmarks:topic' topic.id %}">{{ topic }}</a></p>
   <p>Edit:</p>
-  <form action="{% url 'silk_bookmarks:edit_topic' topic.id %}" method='post'>
+  <form action="{% url 'silk_bookmarks:edit_topic' topic.id %}" method='post' enctype="multipart/form-data">
     {% csrf_token %}
     {% bootstrap_form form %}
+    <center><p>* photo</p>
+      <div class="input-group col-md-4">
+        <input id="search" type="text" class="form-control" placeholder="Search...">
+        <span class="input-group-btn">
+            <button class="btn btn-outline-primary" name='submit_s' id='search_btn' type='button' style="margin-bottom: 10px;">
+                <i class="glyphicon glyphicon-search"></i>
+              </button>
+        </span>
+        </div>
+        <div id="results">
+            {% for photo in photos_url %}
+            <button type="button" src="{{ photo }}" onclick="document.getElementById('id_photo_url').value='{{ photo }}'"; return false; style="background-image: url({{ photo }}); background-size: cover; height: 90px; width: 160px; border: 0px;border-radius: 10px;"> </button>
+              {% empty %}
+              {% endfor %}
+        </div>
+      </center>
   <button name='submit' class="button" role="button">Save</button>
   </form>
+
 {% endblock content %}
+
+{% block scripts %}
+<script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"> </script>
+<script src ={% static "unsplash_search/js/search_photos.js" %}> </script>
+{% endblock %}

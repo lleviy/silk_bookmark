@@ -5,8 +5,10 @@ from .models import Topic, Entry
 class TopicForm(forms.ModelForm):
     class Meta:
         model = Topic
-        fields = ['text', 'author']
-        labels = {'text': 'title', 'author': 'author'}
+        fields = ['text', 'author', 'status', 'assoc', 'adv']
+        labels = {'text': 'title', 'author': 'author', 'status': 'status', 'adv': '* review or your thoughts and feelings', 
+        'assoc': '* associations: several keywords, may be mood or genre'
+        }
 
 class EntryForm(forms.ModelForm):
     class Meta:

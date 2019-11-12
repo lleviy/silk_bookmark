@@ -171,7 +171,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 # Мои настройки
-LOGIN_URL = '/users/login/'
+LOGIN_URL = '/account/login/'
 
 # Настройки django-bootstrap3
 BOOTSTRAP3 = {
@@ -179,7 +179,10 @@ BOOTSTRAP3 = {
     }
 
 #Настройки Heroku
-import dj_database_url
+# import dj_database_url
+# db_config = dj_database_url.config()
+# if db_config:
+#     DATABASES['default'] =  db_config
 
 # Поддержка заголовка 'X-Forwarded-Proto' для request.is_secure().
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

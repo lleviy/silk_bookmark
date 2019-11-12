@@ -27,9 +27,12 @@ def topics(request):
 def topic(request, topic_id):
     topic = Topic.objects.get(id=topic_id)
     author = topic.author
+    status = topic.status
+    adv = topic.adv
+    assoc = topic.assoc
     check_topic_owner(request, topic.owner)
     entries = topic.entry_set.order_by('-date_added')
-    context = {'topic': topic, 'author': author, 'entries': entries}
+    context = {'topic': topic, 'author': author, 'entries': entries, 'status': status, 'adv': adv, 'assoc': 'assoc'}
     return render(request, 'silk_bookmarks/topic.html', context)
 
 @login_required

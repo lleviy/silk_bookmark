@@ -5,13 +5,26 @@
 {% endblock header %}
 
 {% block content %}
-<div class="silk-theme">
+<div class="silk-theme" style="background-image: "{{ topic.image }}">
     <div class="container-fluid">
             <div class="scroller">
-                <h6>"{{topic}}", {{ topic.author }} </h6>
-                <p style="font-size: 12px;"><small><a href="{% url 'silk_bookmarks:edit_topic' topic.id %}">edit</a> | <a href="{% url 'silk_bookmarks:del_topic' topic.id %}">delete</a></small></p>
-                <a class="button" href="{% url 'silk_bookmarks:new_entry' topic.id %}" role="button">Add a quote</a>
+                <a href="#" onclick="toggle('#menu-1');" class="heading-button"><h6>"{{topic}}", {{ topic.author }}</h6></a>
 
+                <div id="menu-1"> 
+                  <h6>status:</h6>
+                  {{topic.status}} 
+                  {% if topic.assoc %}
+                    <h6>associations:</h6>
+                    <p>{{topic.assoc}}</p> 
+                  {% endif %}
+                  {% if topic.adv %}
+                    <h6>review:</h6>
+                    <p>{{topic.adv}}</p> 
+                  {% endif %}
+                  <p style="font-size: 12px;"><small><a href="{% url 'silk_bookmarks:edit_topic' topic.id %}">edit</a> | <a href="{% url 'silk_bookmarks:del_topic' topic.id %}">delete</a></small></p></div>
+                  <div class="row">
+                  <a class="button" href="{% url 'silk_bookmarks:new_entry' topic.id %}" role="button">Add a quote</a>
+                  </div>
                 <div class="row">
                   {% for entry in entries %}
                       <div class="col-xs-12 col-md-6">
@@ -39,3 +52,30 @@
 </div>
 
 {% endblock content %}
+
+{% block scripts %}
+<script>
+    $(function() {
+     $("div[id*='menu-']").hide(); 
+    })();
+    
+    function toggle(objName) {
+     var obj = $(objName),
+     blocks = $("div[id*='menu-']");
+     
+     if (obj.css("display") != "none") {
+     obj.animate({ height: 'hide' }, 500);
+     } else {
+     var visibleBlocks = $("div[id*='menu-']:visible");
+    
+     if (visibleBlocks.length < 1) {
+     obj.animate({ height: 'show' }, 500);
+     } else {
+     $(visibleBlocks).animate({ height: 'hide' }, 500, function() {
+     obj.animate({ height: 'show' }, 500);
+     }); 
+     }
+     }
+    }
+    </script>
+{% endblock scripts %}

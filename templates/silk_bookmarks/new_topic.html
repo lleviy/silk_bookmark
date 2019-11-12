@@ -7,10 +7,10 @@
 {% block content %}
 <div class="silk-theme">
     <div class="container-fluid">
-        <div class="col-md-5 col-xs-12 sidebar">
+            <div class="col-xs-0 col-md-3">
+            </div>
+            <div class="col-xs-12 col-md-6">
             <div class="scroller">
-                    <h2>Add a book:
-                    </h2>
   <form action="{% url 'silk_bookmarks:new_topic' %}" method='post' class="form">
       {% csrf_token %}
       {% bootstrap_form form %}

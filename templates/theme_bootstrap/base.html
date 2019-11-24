@@ -43,11 +43,6 @@
                                     <span class="fa fa-bars"></span>
                                 </button>
                                 {% block site_brand %}<a class="navbar-brand" href="{% url 'silk_bookmarks:index' %}">{{ SITE_NAME }}</a>{% endblock %}
-                                
-                                    <ul class="nav navbar-nav">
-                                      <li><a href="{% url 'silk_bookmarks:topics' %}">my books</a></li>
-                                    </ul>
-                                    
                             </div>
                             <div class="collapse navbar-collapse navbar-responsive-collapse">
                                 {% block nav %}
@@ -58,7 +53,9 @@
                                         </ul>
                                     {% endcomment %}
                                 {% endblock %}
-                                {% block account_bar %}{% include "_account_bar.html" %}{% endblock %}
+                                {% block account_bar %}<ul class="nav navbar-nav">
+                                        <li><a href="{% url 'silk_bookmarks:topics' %}">my books</a></li>
+                                      </ul>{% include "_account_bar.html" %}{% endblock %}
                             </div>
                         {% endblock %}
                         </div>

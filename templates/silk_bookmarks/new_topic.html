@@ -11,9 +11,14 @@
             </div>
             <div class="col-xs-12 col-md-6">
             <div class="scroller">
-  <form action="{% url 'silk_bookmarks:new_topic' %}" method='post' class="form">
+  <form action="{% url 'silk_bookmarks:new_topic' %}" method='post' class="form" enctype="multipart/form-data" id="formUpload">
       {% csrf_token %}
       {% bootstrap_form form %}
+      {% for photo in photos_url%}
+      <input type="image" src="{{ photo }}" onclick="document.getElementById('id_photo_url').value='{{ photo }}'; return false;" style="height: 90px; width: 160px; border-radius: 10px;"/>
+        {% empty %}
+        <li>No photos have been added yet.</li>
+      {% endfor %}
       <button name="submit" class="button" role="button">add book</button>
-  </form>
+      </form>
 {% endblock content %}

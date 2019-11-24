@@ -7,10 +7,38 @@ from django.contrib.auth.decorators import login_required
 from .models import Topic, Entry
 from .forms import TopicForm, EntryForm
 
+from unsplash.api import Api
+from unsplash.auth import Auth
+
+client_id = "b6332c936c260748d8f18b804170f6ad86d8f9e3d2079cebb17c2d485b43d222"
+client_secret = "299ed1ba374d08f4ce76044d94a69345022e329d55e7ce84f85d7dca282c503b"
+redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
+code = ""
+
+auth = Auth(client_id, client_secret, redirect_uri, code=code)
+api = Api(auth)
+
+def search_form(request):
+    return render_to_response('silk_bookmarks/edit_topic.html')
+
+def search(request):
+    if 'q' in request.GET:
+        message = 'You searched for: %r' % request.GET['q']
+    else:
+        message = 'You submitted an empty form.'
+    return HttpResponse(message)
+
+# def search_photos(request):
+#     form = PhotoSearchForm()
+#     model = Topic
+#     search = api.search.photos(search_text)
+#     for photo in search['results']:
+#         photo_url = f'https://source.unsplash.com/{photo.id}/1600x900'
+#         print(photo_url)
+
 def check_topic_owner(request, owner):
     if owner != request.user:
         raise Http404
-
 
 def index(request):
     """Домашняя страница приложения silk_bookmarks"""
@@ -35,21 +63,29 @@ def topic(request, topic_id):
     context = {'topic': topic, 'author': author, 'entries': entries, 'status': status, 'adv': adv, 'assoc': 'assoc'}
     return render(request, 'silk_bookmarks/topic.html', context)
 
+def search_photos():
+    photos_url = []
+    search = api.photo.random(orientation='landscape', count=12, collections='983862')
+    for photo in search:
+        photos_url.append(f'https://source.unsplash.com/{photo.id}/1600x900')
+    return photos_url
+
 @login_required
 def new_topic(request):
+    photos_url = search_photos()
     """Определяет новую форму"""
     if request.method != 'POST':
         # Данные не отправлялись; создается пустая форма.
         form = TopicForm()
     else:
         # Отправлены данные POST; обработать данные.
-        form = TopicForm(request.POST)
+        form = TopicForm(request.POST, request.FILES)
         if form.is_valid():
             new_topic = form.save(commit=False)
             new_topic.owner = request.user
             new_topic.save()
             return HttpResponseRedirect(reverse('silk_bookmarks:topics'))
-    context = {'form': form}
+    context = {'form': form, 'photos_url': photos_url}
     return render(request, 'silk_bookmarks/new_topic.html', context)
 
 @login_required
@@ -98,18 +134,19 @@ def edit_entry(request, entry_id):
 
 @login_required
 def edit_topic(request, topic_id):
+    photos_url = search_photos()
     topic = Topic.objects.get(id=topic_id)
     check_topic_owner(request, topic.owner)
     if request.method != 'POST':
         # Данные не отправлялись; форма заполняется данными текущей записи.
         form = TopicForm(instance=topic)
     else:
-        form = TopicForm(instance=topic, data=request.POST)
+        form = TopicForm(data=request.POST, files=request.FILES, instance=topic)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('silk_bookmarks:topic', 
             args=[topic_id]))
-    context = {'topic': topic, 'form': form}
+    context = {'topic': topic, 'form': form, 'photos_url': photos_url}
     return render(request, 'silk_bookmarks/edit_topic.html', context)
 
 @login_required

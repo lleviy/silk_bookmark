@@ -14,7 +14,7 @@
                 <a class="button" href="{% url 'silk_bookmarks:new_topic' %}" role="button">Add a book</a>
                 <div class="list-group">
                 {% for topic in topics%}
-                <a href="{% url 'silk_bookmarks:topic' topic.id %}" class="list-group-item">
+                <a href="{% url 'silk_bookmarks:topic' topic.id %}" class="list-group-item" style="margin: 10px; background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ), url({{ topic.photo_url }}); background-position: center; background-size: cover;">
                 <dt class="list-group-item-heading">{{ topic }}</dt>
                 <dd class="list-group-item-text">{{ topic.author }}</dd></a>
                 {% empty %}

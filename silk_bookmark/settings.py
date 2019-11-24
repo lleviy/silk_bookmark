@@ -56,8 +56,12 @@ INSTALLED_APPS = [
     'bootstrapform',
     # Мои приложения
     'silk_bookmarks',
-    'users',
 ]
+
+STATICFILES_FINDERS = (           
+    'django.contrib.staticfiles.finders.FileSystemFinder',   
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
 
 SITE_ID = 1
 
@@ -85,9 +89,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    #Для аккаунта
-    'account.middleware.LocaleMiddleware', #Автоматическая смена языка в зав-ти от местоположения
-    'account.middleware.TimezoneMiddleware',
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -159,18 +160,9 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
-
-STATIC_URL = '/static/'
-# Мои настройки
+# Страница входа по умолчанию
 LOGIN_URL = '/account/login/'
 
 # Настройки django-bootstrap3
@@ -179,10 +171,10 @@ BOOTSTRAP3 = {
     }
 
 #Настройки Heroku
-# import dj_database_url
-# db_config = dj_database_url.config()
-# if db_config:
-#     DATABASES['default'] =  db_config
+import dj_database_url
+db_config = dj_database_url.config()
+if db_config:
+    DATABASES['default'] =  db_config
 
 # Поддержка заголовка 'X-Forwarded-Proto' для request.is_secure().
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -191,15 +183,8 @@ ALLOWED_HOSTS = ['silk-bookmark.herokuapp.com/']
 
 # # Конфигурация статических ресурсов
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.9/howto/static-files/
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
-STATIC_TMP = os.path.join(BASE_DIR, 'static')
-
-os.makedirs(STATIC_TMP, exist_ok=True)
-os.makedirs(STATIC_ROOT, exist_ok=True)
 
 # Extra places for collectstatic to find static files.
 STATICFILES_DIRS = (

@@ -1,5 +1,6 @@
 ll_env/
 __pycache__/
+staticfiles/
 *.sqlite3
 secrets.json
 sqldiff.exe

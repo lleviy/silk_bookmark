@@ -39,7 +39,7 @@ blockquote {
     font-family: 'Roboto Mono',serif;
     font-weight: 300;
     color: #b4bccc;
-    background: transparent;
+    background-color: #00000080;
     text-align: center;
     transition: all 0.2s;
     box-shadow: 0px 6px 10px 1px rgba(0,0,0,.8);

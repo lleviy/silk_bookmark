@@ -4,14 +4,19 @@
 {% block navbar %}
 {% endblock navbar %}
 {% block header %}
-<div class="jumbotron jumbotron-carousel corporate-jumbo" style="background-image: url('/static/site/img/book2.jpg'); background-size: cover; height: 690px; ">
+<div class="jumbotron jumbotron-carousel corporate-jumbo" style="background-image: url('static/site/img/book2.jpg'); background-size: cover; height: 690px; background-repeat: no-repeat;">
     <div class="container-fluid">
-      <div class="row">
+      <div class="row" style="height: 600px; overflow: auto;">
         <div class="col-md-6 col-sm-6">
           <h1>Silk Bookmark</h1>
           {% if user.is_authenticated %}
           <p>You are here as {{user.username}}</p>
           <a class="button" href="{% url 'silk_bookmarks:topics' %}" role="button">my books</a>
+          {% if quote %}
+              <blockquote>{{ quote.text|linebreaks }}
+                  <footer class="blockquote-footer">{{ topic.author }}, <cite title="Source Title">"{{ topic }}"</cite></footer>
+              </blockquote>
+              {% endif %}
           {% else %}
           <p>Don't forget your books</p>
 	  <a class="button" href="{% url "account_signup" %}" role="button">Sign up</a> or <a class="button" href="{% url "account_login" %}" role="button">Sign in</a>
@@ -23,6 +28,7 @@
       </div>
     </div>
   </div>
+</div>
 {% endblock header %}
 
 {% block content %}

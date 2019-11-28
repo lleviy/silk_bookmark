@@ -7,32 +7,31 @@ from django.contrib.auth.decorators import login_required
 from .models import Topic, Entry
 from .forms import TopicForm, EntryForm
 
-from .api import api
-from unsplash.errors import UnsplashError
+from unsplash_search.views import search_photos_default
 
-def search_photos(request, topic_id = None):
-    '''Cлучайная генерация 12 фотографий Unsplash в соответствии с пользовательским запросом'''
-    if request.method == 'GET':
-        q = request.GET.get('q')
-        photos_url = []
-        try:
-            search = api.photo.random(orientation='landscape', count=12, query=q)
-        except UnsplashError:
-            return render(request, 'silk_bookmarks/new_topic.html', {})
-        else:
-            for photo in search:
-                photos_url.append(f'https://source.unsplash.com/{photo.id}/1600x900')
-            return JsonResponse({'photos_url':photos_url}, safe=False)
-    return JsonResponse({},safe=False)
-
-
-def check_topic_owner(request, owner):
-    if owner != request.user:
-        raise Http404
+def generate_random_quote(request):
+    '''Генерирует случайную цитату из добавленных пользователем'''
+    random_quote = ''
+    if Topic.objects.filter(owner = request.user).count():
+            random_book = Topic.objects.filter(owner=request.user).order_by('?')[:1][0]
+            if random_book.entry_set.count() > 0:
+                random_quote = random_book.entry_set.order_by('?')[:1][0]
+            else:
+                random_book = ''
+    return random_quote, random_book
 
 def index(request):
     """Домашняя страница приложения silk_bookmarks"""
-    return render(request, 'silk_bookmarks/index.html')
+    context = {}
+    if request.user.is_authenticated:
+        random_quote, random_book = generate_random_quote(request)
+        context = {'quote': random_quote, 'topic': random_book}
+    return render(request, 'silk_bookmarks/index.html', context)
+
+def check_topic_owner(request, owner):
+    '''Проверяет, является ли текущий пользователь создателем запрашиваемого объекта'''
+    if owner != request.user:
+        raise Http404
 
 @login_required
 def topics(request):
@@ -53,15 +52,6 @@ def topic(request, topic_id):
     entries = topic.entry_set.order_by('-date_added')
     context = {'topic': topic, 'author': author, 'entries': entries, 'status': status, 'adv': adv, 'assoc': assoc}
     return render(request, 'silk_bookmarks/topic.html', context)
-
-
-def search_photos_default():
-    '''Cлучайная генерация 12 фотографий Unsplash из определенной коллекции (нейтральные настроения)'''
-    photos_url = []
-    search = api.photo.random(orientation='landscape', count=12, collections='983862')
-    for photo in search:
-        photos_url.append(f'https://source.unsplash.com/{photo.id}/1600x900')
-    return photos_url
 
 @login_required
 def new_topic(request):

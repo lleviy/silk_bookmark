@@ -5,19 +5,17 @@
 {% endblock header %}
 
 {% block content %}
-<iframe scrolling="no" frameborder="0" allowTransparency="true" src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=babbdd&layout=dark&size=medium&type=tracks&id=108669350&app_id=1" width="700" height="350"></iframe>
 {% if topic.photo_url %}
 <div class="silk-theme" style="background-image: url({{ topic.photo_url }}); ">
   {% else %}
   <div class="silk-theme">
   {% endif %}
     <div class="container-fluid">
-            <div class="scroller">
                 <a href="#" onclick="toggle('#menu-1');" class="heading-button"><h6>"{{topic}}", {{ topic.author }}</h6></a>
                 <a class="board-header-btn mod-show-menu js-show-sidebar" href="#">
                   <span class="icon-sm icon-overflow-menu-horizontal board-header-btn-icon"></span>
                 </a>
-                <div id="menu-1"> 
+                <div id="menu-1" style="background-color: #00000080; width:50%; margin: auto"> 
                   <h6>status:</h6>
                   {{topic.status}} 
                   {% if topic.assoc %}

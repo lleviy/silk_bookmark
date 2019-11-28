@@ -36,14 +36,6 @@ class Topic(models.Model):
         """Возвращает строковое представление модели."""
         return self.text
 
-# class Group(models.Model):
-#     """Группа, в которую пользователь объединяет книги"""
-#     text = models.CharField(max_length=50)
-#     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-#     def __str__(self):
-#         """Возвращает строковое представление модели."""
-#         return self.text
-
 
 class Entry(models.Model):
     """Информация, изученная пользователем по теме"""

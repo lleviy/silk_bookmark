@@ -18,24 +18,25 @@ from django.core.exceptions import ImproperlyConfigured
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# key = os.path.join(BASE_DIR, "secrets.json")
-# with open(key) as f:
-#     secrets = json.loads(f.read())
+def get_secret(setting):
+    """Возвращает значение setting из файла secrets.json, прописанного в .gitignore"""
+    if os.path.exists('secrets.json'):
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        key = os.path.join(BASE_DIR, "secrets.json")
+        with open(key) as f:
+            secrets = json.loads(f.read())
+        try:
+            return secrets[setting]
+        except KeyError:
+            error_msg = "Set the {} environment variable".format(setting)
+            raise ImproperlyConfigured(error_msg)
 
-# def get_secret(setting, secret=secrets):
-#     try:
-#         return secrets[setting]
-#     except KeyError:
-#         error_msg = "Set the {} environment variable".format(setting)
-#         raise ImproperlyConfigured(error_msg)
-
-# SECRET_KEY = get_secret("SECRET_KEY")
+SECRET_KEY = get_secret("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -51,6 +52,7 @@ INSTALLED_APPS = [
     'bootstrapform',
     # Мои приложения
     'silk_bookmarks',
+    'unsplash_search',
 ]
 
 STATICFILES_FINDERS = (           
@@ -58,14 +60,13 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
+#Настройки почтового хоста
 SITE_ID = 1
-
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'silk.bookmark@gmail.com'
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'silk.bookmark@gmail.com'
-EMAIL_HOST_PASSWORD = 'xcassidyrp27'
 THEME_CONTACT_EMAIL = 'silk.bookmark@gmail.com'
 
 AUTHENTICATION_BACKENDS = [
@@ -147,15 +148,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
-
 
 # Страница входа по умолчанию
 LOGIN_URL = '/account/login/'
@@ -176,7 +172,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ALLOWED_HOSTS = ['silk-bookmark.herokuapp.com/']
 
-# # Конфигурация статических ресурсов
+# Конфигурация статических ресурсов
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'

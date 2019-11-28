@@ -1,40 +1,30 @@
 from django.shortcuts import render
 
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, JsonResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 from .models import Topic, Entry
 from .forms import TopicForm, EntryForm
 
-from unsplash.api import Api
-from unsplash.auth import Auth
+from .api import api
+from unsplash.errors import UnsplashError
 
-client_id = "b6332c936c260748d8f18b804170f6ad86d8f9e3d2079cebb17c2d485b43d222"
-client_secret = "299ed1ba374d08f4ce76044d94a69345022e329d55e7ce84f85d7dca282c503b"
-redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
-code = ""
+def search_photos(request, topic_id = None):
+    '''Cлучайная генерация 12 фотографий Unsplash в соответствии с пользовательским запросом'''
+    if request.method == 'GET':
+        q = request.GET.get('q')
+        photos_url = []
+        try:
+            search = api.photo.random(orientation='landscape', count=12, query=q)
+        except UnsplashError:
+            return render(request, 'silk_bookmarks/new_topic.html', {})
+        else:
+            for photo in search:
+                photos_url.append(f'https://source.unsplash.com/{photo.id}/1600x900')
+            return JsonResponse({'photos_url':photos_url}, safe=False)
+    return JsonResponse({},safe=False)
 
-auth = Auth(client_id, client_secret, redirect_uri, code=code)
-api = Api(auth)
-
-def search_form(request):
-    return render_to_response('silk_bookmarks/edit_topic.html')
-
-def search(request):
-    if 'q' in request.GET:
-        message = 'You searched for: %r' % request.GET['q']
-    else:
-        message = 'You submitted an empty form.'
-    return HttpResponse(message)
-
-# def search_photos(request):
-#     form = PhotoSearchForm()
-#     model = Topic
-#     search = api.search.photos(search_text)
-#     for photo in search['results']:
-#         photo_url = f'https://source.unsplash.com/{photo.id}/1600x900'
-#         print(photo_url)
 
 def check_topic_owner(request, owner):
     if owner != request.user:
@@ -46,13 +36,14 @@ def index(request):
 
 @login_required
 def topics(request):
-    """Выводит список тем."""
+    """Выводит список книг."""
     topics = Topic.objects.filter(owner=request.user).order_by('date_added')
     context = {'topics': topics}
     return render(request, 'silk_bookmarks/topics.html', context)
 
 @login_required
 def topic(request, topic_id):
+    """Выводит информацию и цитаты по конкретной книге."""
     topic = Topic.objects.get(id=topic_id)
     author = topic.author
     status = topic.status
@@ -60,10 +51,12 @@ def topic(request, topic_id):
     assoc = topic.assoc
     check_topic_owner(request, topic.owner)
     entries = topic.entry_set.order_by('-date_added')
-    context = {'topic': topic, 'author': author, 'entries': entries, 'status': status, 'adv': adv, 'assoc': 'assoc'}
+    context = {'topic': topic, 'author': author, 'entries': entries, 'status': status, 'adv': adv, 'assoc': assoc}
     return render(request, 'silk_bookmarks/topic.html', context)
 
-def search_photos():
+
+def search_photos_default():
+    '''Cлучайная генерация 12 фотографий Unsplash из определенной коллекции (нейтральные настроения)'''
     photos_url = []
     search = api.photo.random(orientation='landscape', count=12, collections='983862')
     for photo in search:
@@ -72,8 +65,8 @@ def search_photos():
 
 @login_required
 def new_topic(request):
-    photos_url = search_photos()
-    """Определяет новую форму"""
+    """Определяет новую книгу"""
+    photos_url = search_photos_default()
     if request.method != 'POST':
         # Данные не отправлялись; создается пустая форма.
         form = TopicForm()
@@ -89,12 +82,8 @@ def new_topic(request):
     return render(request, 'silk_bookmarks/new_topic.html', context)
 
 @login_required
-def new_group(request):
-    pass
-
-@login_required
 def new_entry(request, topic_id):
-    """Добавляет новую запись по конкретной теме."""
+    """Добавляет новую цитату к конкретной книге."""
     topic = Topic.objects.get(id=topic_id)
     check_topic_owner(request, topic.owner)
     if request.method != 'POST':
@@ -114,7 +103,7 @@ def new_entry(request, topic_id):
 
 @login_required
 def edit_entry(request, entry_id):
-    """Редактирует существующую запись по конкретной теме."""
+    """Редактирует существующую цитату к конкретной книге."""
     entry = Entry.objects.get(id=entry_id)
     topic = entry.topic
     topic_id = topic.id
@@ -134,7 +123,7 @@ def edit_entry(request, entry_id):
 
 @login_required
 def edit_topic(request, topic_id):
-    photos_url = search_photos()
+    photos_url = search_photos_default()
     topic = Topic.objects.get(id=topic_id)
     check_topic_owner(request, topic.owner)
     if request.method != 'POST':
@@ -165,10 +154,3 @@ def del_entry(request, entry_id):
     entry.delete()
     return HttpResponseRedirect(reverse('silk_bookmarks:topic',
             args=[topic_id]))
-
-import logging
-logger = logging.getLogger(__name__)
-def contact(request):
-    ...
-    logger.debug('Log whatever you want')
-

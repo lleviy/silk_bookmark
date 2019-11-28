@@ -19,10 +19,14 @@ urlpatterns = [
     url(r'^topics/(?P<topic_id>\d+)/$', views.topic, name='topic'),
     #Страница для добавления отдельной книги
     path('new_topic/', views.new_topic, name='new_topic'),
+    #Страница для добавления цитаты к книге
     url(r'^new_entry/(?P<topic_id>\d+)/$', views.new_entry, name='new_entry'),
     # Страница для редактирования цитаты
     url(r'^edit_entry/(?P<entry_id>\d+)/$', views.edit_entry, name='edit_entry'),
     url(r'^del_entry/(?P<entry_id>\d+)/$', views.del_entry, name='del_entry'),
     url(r'^edit_topic/(?P<topic_id>\d+)/$', views.edit_topic, name='edit_topic'),
     url(r'^del_topic/(?P<topic_id>\d+)/$', views.del_topic, name='del_topic'),
+    # url для поиска картинок по запросу пользователя на странице new_topic
+    path('new_topic/search_photos/', views.search_photos, name='search_photos'),
+    url(r'^edit_topic/(?P<topic_id>\d+)/search_photos/$', views.search_photos, name='search_photos'),
 ]

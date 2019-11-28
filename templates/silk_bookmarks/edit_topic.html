@@ -1,5 +1,6 @@
 {% extends "silk_bookmarks/base.html" %}
 {% load bootstrap3 %}
+{% load staticfiles %}
 
 {% block content %}
 {% if topic.photo_url %}
@@ -17,12 +18,29 @@
   <form action="{% url 'silk_bookmarks:edit_topic' topic.id %}" method='post' enctype="multipart/form-data">
     {% csrf_token %}
     {% bootstrap_form form %}
-    {% for photo in photos_url%}
-      <input type="image" src="{{ photo }}" onclick="document.getElementById('id_photo_url').value='{{ photo }}'; return false;" style="height: 90px; width: 160px; border-radius: 10px;"/>
-        {% empty %}
-        <li>No photos have been added yet.</li>
-      {% endfor %}
+    <p>* photo</p>
+    <center><div class="input-group col-md-4">
+      
+        <input id="search" type="text" class="form-control" placeholder="Search...">
+        <span class="input-group-btn">
+            <button class="btn btn-outline-primary" name='submit_s' id='search_btn' type='button' style="margin-bottom: 10px;">
+                <i class="glyphicon glyphicon-search"></i>
+              </button>
+        </span>
+        </div>
+        <div id="results">
+            {% for photo in photos_url %}
+            <button type="button" src="{{ photo }}" onclick="document.getElementById('id_photo_url').value='{{ photo }}'"; return false; style="background-image: url({{ photo }}); background-size: cover; height: 90px; width: 160px; border: 0px;border-radius: 10px;"> </button>
+              {% empty %}
+              {% endfor %}
+        </div>
+      </center>
   <button name='submit' class="button" role="button">Save</button>
   </form>
 
 {% endblock content %}
+
+{% block scripts %}
+<script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"> </script>
+<script src ={% static "site/js/search_photos.js" %}> </script>
+{% endblock %}

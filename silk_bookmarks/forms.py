@@ -9,6 +9,7 @@ class TopicForm(forms.ModelForm):
         labels = {'text': 'title', 'author': 'author', 'status': 'status', 'adv': '* your thoughts and feelings', 
         'assoc': '* associations: several keywords, may be mood or genre', 'photo_url': '* photo url' ,
         }
+        widgets = {'photo_url' : forms.HiddenInput()}
 
 class EntryForm(forms.ModelForm):
     class Meta:
@@ -17,5 +18,3 @@ class EntryForm(forms.ModelForm):
         labels = {'text': ''}
         widgets = {'text': forms.Textarea(attrs={'cols': 80})}
 
-class PhotoSearchForm(forms.ModelForm):
-    query = forms.CharField(required=False)

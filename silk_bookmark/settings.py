@@ -30,11 +30,13 @@ def get_secret(setting):
         except KeyError:
             error_msg = "Set the {} environment variable".format(setting)
             raise ImproperlyConfigured(error_msg)
+    else:
+        return os.environ[setting]
 
 SECRET_KEY = get_secret("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # Application definition
 INSTALLED_APPS = [
@@ -66,6 +68,7 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'silk.bookmark@gmail.com'
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
+EMAIL_HOST_PASSWORD = get_secret("EMAIL_HOST_PASSWORD")
 EMAIL_HOST_USER = 'silk.bookmark@gmail.com'
 THEME_CONTACT_EMAIL = 'silk.bookmark@gmail.com'
 

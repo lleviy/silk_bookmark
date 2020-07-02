@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 import django_heroku
+import dj_database_url
 import os
 import json
 from django.core.exceptions import ImproperlyConfigured
@@ -17,11 +18,11 @@ from django.core.exceptions import ImproperlyConfigured
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
 # SECURITY WARNING: keep the secret key used in production secret!
 def get_secret(setting):
     """Return setting's value from secrets.json"""
     if os.path.exists('secrets.json'):
-        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         key = os.path.join(BASE_DIR, "secrets.json")
         with open(key) as f:
             secrets = json.loads(f.read())
@@ -32,6 +33,7 @@ def get_secret(setting):
             raise ImproperlyConfigured(error_msg)
     else:
         return os.environ[setting]
+
 
 SECRET_KEY = get_secret("SECRET_KEY")
 
@@ -58,9 +60,8 @@ INSTALLED_APPS = [
     'extended_account',
 ]
 
-
-STATICFILES_FINDERS = (           
-    'django.contrib.staticfiles.finders.FileSystemFinder',   
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
@@ -109,7 +110,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                #Для аккаунта
+                # Для аккаунта
                 'account.context_processors.account',
                 'django.template.context_processors.request',
                 'pinax_theme_bootstrap.context_processors.theme',
@@ -123,7 +124,6 @@ ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
 
 WSGI_APPLICATION = 'silk_bookmark.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
@@ -133,7 +133,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -164,10 +163,9 @@ LOGIN_URL = '/account/login/'
 # Настройки django-bootstrap3
 BOOTSTRAP3 = {
     'include_jquery': True,
-    }
+}
 
-#Настройки Heroku
-import dj_database_url
+# Настройки Heroku
 db_config = dj_database_url.config()
 if db_config:
     DATABASES['default'] = db_config
@@ -175,7 +173,7 @@ if db_config:
 # Поддержка заголовка 'X-Forwarded-Proto' для request.is_secure().
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-ALLOWED_HOSTS = ['silk-bookmark.herokuapp.com/']
+ALLOWED_HOSTS = ['*']
 
 # Конфигурация статических ресурсов
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

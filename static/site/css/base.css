@@ -51,7 +51,6 @@ a:focus, a:hover {
     color: #443e58;
     text-decoration: none;
 }
-  
 
 .heading-button {
     display: inline-block;
@@ -239,4 +238,4 @@ alert-success {
     width: 339px;
     z-index: 5;
 }
-
+}

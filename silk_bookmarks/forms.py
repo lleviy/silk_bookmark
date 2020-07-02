@@ -2,8 +2,6 @@ from django import forms
 
 from .models import Book, Quote
 
-from account.forms import SettingsForm
-
 
 class BookForm(forms.ModelForm):
     class Meta:

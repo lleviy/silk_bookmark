@@ -1,0 +1,36 @@
+{% extends "silk_bookmarks/base.html" %}
+{% load bootstrap3 %}
+
+{% block header %}
+{% endblock header %}
+
+{% block content %}
+{% if appearance.photo_url %}
+<div class="silk-theme" style="background-image: url({{ appearance.photo_url }});">
+    {% else %}
+    <div class="silk-theme">
+    {% endif %}
+    <div class="container-fluid">
+        <div class="col-xs-0 col-md-3">
+          </div>
+          <div class="col-xs-12 col-md-6">
+            <div class="scroller">
+                <a class="button" href="{% url 'silk_bookmarks:new_book' %}" role="button">Add a book</a>
+                <div class="list-group">
+                {% for book in books %}
+                <a href="{% url 'silk_bookmarks:book' book.id %}" class="list-group-item" style="background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ), url({{ book.photo_url }});">
+                <dt class="list-group-item-heading">{{ book }}</dt>
+                <dd class="list-group-item-text">{{ book.author }}</dd></a>
+                {% empty %}
+                  <li>No books have been added yet.</li>
+                {% endfor %}
+                </div>
+             </div>
+        </div>
+        
+        <div class="col-md-6 col-xs-12 main">
+            
+        </div>
+        </div>
+</div>
+{% endblock content %}

@@ -2,8 +2,8 @@
 {% load bootstrap3 %}
 
 {% block content %}
-{% if topic.photo_url %}
-<div class="silk-theme" style="background-image: url({{ topic.photo_url }});">
+{% if book.photo_url %}
+<div class="silk-theme" style="background-image: url({{ book.photo_url }});">
   {% else %}
   <div class="silk-theme">
   {% endif %}
@@ -12,11 +12,11 @@
           </div>
           <div class="col-xs-12 col-md-6">
             <div class="scroller">
-                <p><a class="button" href="{% url 'silk_bookmarks:topic' topic.id %}">{{ topic }}</a></p>
-  <p>Edit:</p>
-  <form action="{% url 'silk_bookmarks:edit_entry' entry.id %}" method='post'>
+  <p><a class="button" href="{% url 'silk_bookmarks:book' book.id %}">{{ book }}</a></p>
+  <p>Add a quote:</p>
+  <form action="{% url 'silk_bookmarks:new_quote' book.id %}" method='post'>
     {% csrf_token %}
     {% bootstrap_form form %}
-  <button name='submit' class="button" role="button">Save</button>
+  <button name='submit' class="button" role="button">add</button>
   </form>
 {% endblock content %}

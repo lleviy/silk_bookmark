@@ -1,4 +1,3 @@
-
 {% load staticfiles %}
 {% load bootstrap3 %}
 
@@ -11,10 +10,9 @@
         {% bootstrap_javascript %}
         {% block viewport %}
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- Bootstrap core CSS -->
-  <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Bootstrap core CSS -->
+        <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
         {% endblock %}
 
         {% block styles %}<link rel="stylesheet" href="{% static 'site/css/base.css' %}">{% endblock %}
@@ -30,6 +28,7 @@
             {% block extra_head %}{% endblock %}
         {% endblock %}
     </head>
+
     <body class="{% block body_class %}{% endblock %}" id="{% block body_id %}{% endblock %}" {% block body_extra_attributes %}{% endblock %}>
         <div class="{% block wrapper_class %}{% endblock %}">
 
@@ -54,7 +53,7 @@
                                     {% endcomment %}
                                 {% endblock %}
                                 {% block account_bar %}<ul class="nav navbar-nav">
-                                        <li><a href="{% url 'silk_bookmarks:topics' %}">my books</a></li>
+                                        <li><a href="{% url 'silk_bookmarks:books' %}">my books</a></li>
                                       </ul>{% include "_account_bar.html" %}{% endblock %}
                             </div>
                         {% endblock %}

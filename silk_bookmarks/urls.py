@@ -2,9 +2,6 @@
 
 from django.conf.urls import url
 from django.urls import path
-from django.conf.urls.static import static
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.conf import settings
 
 from . import views
 
@@ -14,16 +11,16 @@ urlpatterns = [
     #Домашняя страница
     path('', views.index, name='index'),
     #Вывод всех книг
-    path('topics/', views.topics, name='topics'),
+    path('books/', views.books, name='books'),
     #Страница с подробной информацией по отдельной книге
-    url(r'^topics/(?P<topic_id>\d+)/$', views.topic, name='topic'),
+    url(r'^books/(?P<book_id>\d+)/$', views.book, name='book'),
     #Страница для добавления отдельной книги
-    path('new_topic/', views.new_topic, name='new_topic'),
+    path('new_book/', views.new_book, name='new_book'),
     #Страница для добавления цитаты к книге
-    url(r'^new_entry/(?P<topic_id>\d+)/$', views.new_entry, name='new_entry'),
+    url(r'^new_quote/(?P<book_id>\d+)/$', views.new_quote, name='new_quote'),
     # Страница для редактирования цитаты
-    url(r'^edit_entry/(?P<entry_id>\d+)/$', views.edit_entry, name='edit_entry'),
-    url(r'^del_entry/(?P<entry_id>\d+)/$', views.del_entry, name='del_entry'),
-    url(r'^edit_topic/(?P<topic_id>\d+)/$', views.edit_topic, name='edit_topic'),
-    url(r'^del_topic/(?P<topic_id>\d+)/$', views.del_topic, name='del_topic'),
+    url(r'^edit_quote/(?P<quote_id>\d+)/$', views.edit_quote, name='edit_quote'),
+    url(r'^del_quote/(?P<quote_id>\d+)/$', views.del_quote, name='del_quote'),
+    url(r'^edit_book/(?P<book_id>\d+)/$', views.edit_book, name='edit_book'),
+    url(r'^del_book/(?P<book_id>\d+)/$', views.del_book, name='del_book'),
     ]

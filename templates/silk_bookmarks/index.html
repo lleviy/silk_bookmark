@@ -4,17 +4,21 @@
 {% block navbar %}
 {% endblock navbar %}
 {% block header %}
-<div class="jumbotron jumbotron-carousel corporate-jumbo" style="background-image: url('static/site/img/book2.jpg'); background-size: cover; height: 690px; background-repeat: no-repeat;">
+{% if appearance.photo_url %}
+<div class="jumbotron jumbotron-carousel corporate-jumbo" style="background-image: url({{ appearance.photo_url }}); background-repeat: no-repeat; background-attachment:fixed; background-size: cover">
+    {% else %}
+    <div class="jumbotron jumbotron-carousel corporate-jumbo" style="background-image: url({% static 'site/img/book2.jpg' %}); background-attachment:fixed; background-size: cover; background-repeat: no-repeat;">
+        {% endif %}
     <div class="container-fluid">
       <div class="row" style="height: 600px; overflow: auto;">
         <div class="col-md-6 col-sm-6">
           <h1>Silk Bookmark</h1>
           {% if user.is_authenticated %}
           <p>You are here as {{user.username}}</p>
-          <a class="button" href="{% url 'silk_bookmarks:topics' %}" role="button">my books</a>
+          <a class="button" href="{% url 'silk_bookmarks:books' %}" role="button">my books</a>
           {% if quote %}
               <blockquote>{{ quote.text|linebreaks }}
-                  <footer class="blockquote-footer">{{ topic.author }}, <cite title="Source Title">"{{ topic }}"</cite></footer>
+                  <footer class="blockquote-footer">{{ book.author }}, <cite title="Source Title">"{{ book }}"</cite></footer>
               </blockquote>
               {% endif %}
           {% else %}
@@ -43,6 +47,12 @@
   <p>Add your read books here, take notes, highlight quotes. Come back and never forget. </p></span>
   </div>
 {% endblock content %}
+
+{% block footer %}
+<small><center>For communication and suggestions:
+    <p><a href="mailto:{{ THEME_CONTACT_EMAIL }}">{{ THEME_CONTACT_EMAIL }}</a></p>
+  </center> </small>
+{% endblock footer %}
 
 {% block scripts %}
 <script src="{% static 'site/js/site.js' %}"></script>

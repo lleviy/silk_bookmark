@@ -1,0 +1,36 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block body %}
+<div class="col-xs-12 col-md-8">
+    <form method="POST" action="{% url 'extended_account:account_appearance' %}">
+        <legend>{% trans "Appearance" %}</legend>
+        {% csrf_token %}
+        {{ form|bootstrap }}
+    <p>photo</p>
+          <div class="input-group col-md-6">
+          <input id="search" type="text" class="form-control" placeholder="Search...">
+          <span class="input-group-btn">
+              <button class="btn btn-outline-primary" name='submit_s' id='search_btn' type='button' style="margin-bottom: 10px;">
+                  <i class="glyphicon glyphicon-search"></i>
+                </button>
+          </span>
+          </div>
+          <div id="results">
+              {% for photo in photos_url %}
+            <button type="button" src="{{ photo }}" onclick="document.getElementById('id_photo_url').value='{{ photo }}'"; return false; style="background-image: url({{ photo }}); background-size: cover; height: 90px; width: 160px; border: 0px;border-radius: 10px;"> </button>
+              {% empty %}
+              {% endfor %}
+          </div>
+        <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"> </script>
+<script src ={% static "unsplash_search/js/search_photos.js" %}> </script>
+{% endblock %}

@@ -19,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 def get_secret(setting):
-    """Возвращает значение setting из файла secrets.json, прописанного в .gitignore"""
+    """Return setting's value from secrets.json"""
     if os.path.exists('secrets.json'):
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         key = os.path.join(BASE_DIR, "secrets.json")
@@ -36,7 +36,7 @@ def get_secret(setting):
 SECRET_KEY = get_secret("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # Application definition
 INSTALLED_APPS = [
@@ -47,22 +47,24 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    # Сторонние приложения
+    # Other apps
     'bootstrap3',
     'account',
     'pinax_theme_bootstrap',
     'bootstrapform',
-    # Мои приложения
+    # My apps
     'silk_bookmarks',
     'unsplash_search',
+    'extended_account',
 ]
+
 
 STATICFILES_FINDERS = (           
     'django.contrib.staticfiles.finders.FileSystemFinder',   
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
-#Настройки почтового хоста
+# Настройки почтового хоста
 SITE_ID = 1
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'silk.bookmark@gmail.com'
@@ -168,7 +170,7 @@ BOOTSTRAP3 = {
 import dj_database_url
 db_config = dj_database_url.config()
 if db_config:
-    DATABASES['default'] =  db_config
+    DATABASES['default'] = db_config
 
 # Поддержка заголовка 'X-Forwarded-Proto' для request.is_secure().
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

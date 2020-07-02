@@ -5,41 +5,41 @@
 {% endblock header %}
 
 {% block content %}
-{% if topic.photo_url %}
-<div class="silk-theme" style="background-image: url({{ topic.photo_url }}); ">
+{% if book.photo_url %}
+<div class="silk-theme" style="background-image: url({{ book.photo_url }}); ">
   {% else %}
   <div class="silk-theme">
   {% endif %}
     <div class="container-fluid">
-                <a href="#" onclick="toggle('#menu-1');" class="heading-button"><h6>"{{topic}}", {{ topic.author }}</h6></a>
+                <a href="#" onclick="toggle('#menu-1');" class="heading-button"><h6>"{{book}}", {{ book.author }}</h6></a>
                 <a class="board-header-btn mod-show-menu js-show-sidebar" href="#">
                   <span class="icon-sm icon-overflow-menu-horizontal board-header-btn-icon"></span>
                 </a>
                 <div id="menu-1" style="background-color: #00000080; width:50%; margin: auto"> 
                   <h6>status:</h6>
-                  {{topic.status}} 
-                  {% if topic.assoc %}
+                  {{book.status}}
+                  {% if book.assoc %}
                     <h6>associations:</h6>
-                    <p>{{topic.assoc}}</p> 
+                    <p>{{book.assoc}}</p>
                   {% endif %}
-                  {% if topic.adv %}
+                  {% if book.adv %}
                     <h6>review:</h6>
-                    <p>{{topic.adv}}</p> 
+                    <p>{{book.adv}}</p>
                   {% endif %}
-                  <p style="font-size: 12px;"><small><a href="{% url 'silk_bookmarks:edit_topic' topic.id %}">edit</a> | <a href="{% url 'silk_bookmarks:del_topic' topic.id %}">delete</a></small></p></div>
+                  <p style="font-size: 12px;"><small><a href="{% url 'silk_bookmarks:edit_book' book.id %}">edit</a> | <a href="{% url 'silk_bookmarks:del_book' book.id %}">delete</a></small></p></div>
                   <div class="row">
-                  <a class="button" href="{% url 'silk_bookmarks:new_entry' topic.id %}" role="button">Add a quote</a>
+                  <a class="button" href="{% url 'silk_bookmarks:new_quote' book.id %}" role="button">Add a quote</a>
                   </div>
                 <div class="row">
-                  {% for entry in entries %}
+                  {% for quote in quotes %}
                       <div class="col-xs-12 col-md-6">
                           <div class="scroller">
-                        <blockquote>{{ entry.text|linebreaks }}
-                          <footer class="blockquote-footer">{{ topic.author }}, <cite title="Source Title">"{{ topic }}"</cite></footer>
+                        <blockquote>{{ quote.text|linebreaks }}
+                          <footer class="blockquote-footer">{{ book.author }}, <cite title="Source Title">"{{ book }}"</cite></footer>
                       </blockquote>
                       <h5>
-                          <small>{{ entry.date_added|date:'M d, Y H:i' }}</small>
-                          <small><a href="{% url 'silk_bookmarks:edit_entry' entry.id %}">edit</a> | <a href="{% url 'silk_bookmarks:del_entry' entry.id %}">delete</a></td></small>
+                          <small>{{ quote.date_added|date:'M d, Y H:i' }}</small>
+                          <small><a href="{% url 'silk_bookmarks:edit_quote' quote.id %}">edit</a> | <a href="{% url 'silk_bookmarks:del_quote' quote.id %}">delete</a></td></small>
                         </h5>
                       </div>
                     </div>

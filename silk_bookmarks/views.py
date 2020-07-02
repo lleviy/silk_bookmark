@@ -1,146 +1,143 @@
 from django.shortcuts import render
 
-from django.http import HttpResponseRedirect, Http404, JsonResponse
+from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
-from .models import Topic, Entry
-from .forms import TopicForm, EntryForm
+from .models import Book, Quote
+from .forms import BookForm, QuoteForm
 
 from unsplash_search.views import search_photos_default
+from extended_account.models import Appearance
+
 
 def generate_random_quote(request):
-    '''Генерирует случайную цитату из добавленных пользователем'''
     random_quote = ''
-    if Topic.objects.filter(owner = request.user).count():
-            random_book = Topic.objects.filter(owner=request.user).order_by('?')[:1][0]
-            if random_book.entry_set.count() > 0:
-                random_quote = random_book.entry_set.order_by('?')[:1][0]
+    random_book = ''
+    if Book.objects.filter(owner = request.user).count():
+            random_book = Book.objects.filter(owner=request.user).order_by('?')[:1][0]
+            if random_book.quote_set.count() > 0:
+                random_quote = random_book.quote_set.order_by('?')[:1][0]
             else:
                 random_book = ''
     return random_quote, random_book
 
 def index(request):
-    """Домашняя страница приложения silk_bookmarks"""
     context = {}
     if request.user.is_authenticated:
         random_quote, random_book = generate_random_quote(request)
-        context = {'quote': random_quote, 'topic': random_book}
+        appearance = Appearance.objects.filter(owner=request.user)[0]
+        context = {'quote': random_quote, 'book': random_book, 'appearance': appearance}
     return render(request, 'silk_bookmarks/index.html', context)
 
-def check_topic_owner(request, owner):
-    '''Проверяет, является ли текущий пользователь создателем запрашиваемого объекта'''
+def check_book_owner(request, owner):
     if owner != request.user:
         raise Http404
 
 @login_required
-def topics(request):
-    """Выводит список книг."""
-    topics = Topic.objects.filter(owner=request.user).order_by('date_added')
-    context = {'topics': topics}
-    return render(request, 'silk_bookmarks/topics.html', context)
+def books(request):
+    books = Book.objects.filter(owner=request.user).order_by('-date_added')
+    appearance = Appearance.objects.filter(owner=request.user)[0]
+    context = {'books': books, 'appearance': appearance}
+    return render(request, 'silk_bookmarks/books.html', context)
 
 @login_required
-def topic(request, topic_id):
-    """Выводит информацию и цитаты по конкретной книге."""
-    topic = Topic.objects.get(id=topic_id)
-    author = topic.author
-    status = topic.status
-    adv = topic.adv
-    assoc = topic.assoc
-    check_topic_owner(request, topic.owner)
-    entries = topic.entry_set.order_by('-date_added')
-    context = {'topic': topic, 'author': author, 'entries': entries, 'status': status, 'adv': adv, 'assoc': assoc}
-    return render(request, 'silk_bookmarks/topic.html', context)
+def book(request, book_id):
+    book = Book.objects.get(id=book_id)
+    author = book.author
+    status = book.status
+    adv = book.adv
+    assoc = book.assoc
+    check_book_owner(request, book.owner)
+    quotes = book.quote_set.order_by('-date_added')
+    context = {'book': book, 'author': author, 'quotes': quotes, 'status': status, 'adv': adv, 'assoc': assoc}
+    return render(request, 'silk_bookmarks/book.html', context)
 
 @login_required
-def new_topic(request):
-    """Определяет новую книгу"""
+def new_book(request):
     photos_url = search_photos_default()
     if request.method != 'POST':
         # Данные не отправлялись; создается пустая форма.
-        form = TopicForm()
+        form = BookForm()
     else:
         # Отправлены данные POST; обработать данные.
-        form = TopicForm(request.POST, request.FILES)
+        form = BookForm(request.POST, request.FILES)
         if form.is_valid():
-            new_topic = form.save(commit=False)
-            new_topic.owner = request.user
-            new_topic.save()
-            return HttpResponseRedirect(reverse('silk_bookmarks:topics'))
+            new_book = form.save(commit=False)
+            new_book.owner = request.user
+            new_book.save()
+            return HttpResponseRedirect(reverse('silk_bookmarks:books'))
     context = {'form': form, 'photos_url': photos_url}
-    return render(request, 'silk_bookmarks/new_topic.html', context)
+    return render(request, 'silk_bookmarks/new_book.html', context)
 
 @login_required
-def new_entry(request, topic_id):
-    """Добавляет новую цитату к конкретной книге."""
-    topic = Topic.objects.get(id=topic_id)
-    check_topic_owner(request, topic.owner)
+def new_quote(request, book_id):
+    book = Book.objects.get(id=book_id)
+    check_book_owner(request, book.owner)
     if request.method != 'POST':
     # Данные не отправлялись; создается пустая форма.
-        form = EntryForm()
+        form = QuoteForm()
     else:
     # Отправлены данные POST; обработать данные.
-        form = EntryForm(data=request.POST)
+        form = QuoteForm(data=request.POST)
         if form.is_valid():
-            new_entry = form.save(commit=False)
-            new_entry.topic = topic
-            new_entry.save()
-            return HttpResponseRedirect(reverse('silk_bookmarks:topic',
-            args=[topic_id]))
-    context = {'topic': topic, 'form': form}
-    return render(request, 'silk_bookmarks/new_entry.html', context)
+            new_quote = form.save(commit=False)
+            new_quote.book = book
+            new_quote.save()
+            return HttpResponseRedirect(reverse('silk_bookmarks:book',
+            args=[book_id]))
+    context = {'book': book, 'form': form}
+    return render(request, 'silk_bookmarks/new_quote.html', context)
 
 @login_required
-def edit_entry(request, entry_id):
-    """Редактирует существующую цитату к конкретной книге."""
-    entry = Entry.objects.get(id=entry_id)
-    topic = entry.topic
-    topic_id = topic.id
-    check_topic_owner(request, topic.owner)
+def edit_quote(request, quote_id):
+    quote = Quote.objects.get(id=quote_id)
+    book = quote.book
+    book_id = book.id
+    check_book_owner(request, book.owner)
     if request.method != 'POST':
         # Данные не отправлялись; форма заполняется данными текущей записи.
-        form = EntryForm(instance=entry)
+        form = QuoteForm(instance=quote)
     else:
         # Отправлены данные POST; обработать данные.
-        form = EntryForm(instance=entry, data=request.POST)
+        form = QuoteForm(instance=quote, data=request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('silk_bookmarks:topic', 
-            args=[topic_id]))
-    context = {'entry': entry, 'topic': topic, 'form': form}
-    return render(request, 'silk_bookmarks/edit_entry.html', context)
+            return HttpResponseRedirect(reverse('silk_bookmarks:book',
+            args=[book_id]))
+    context = {'quote': quote, 'book': book, 'form': form}
+    return render(request, 'silk_bookmarks/edit_quote.html', context)
 
 @login_required
-def edit_topic(request, topic_id):
+def edit_book(request, book_id):
     photos_url = search_photos_default()
-    topic = Topic.objects.get(id=topic_id)
-    check_topic_owner(request, topic.owner)
+    book = Book.objects.get(id=book_id)
+    check_book_owner(request, book.owner)
     if request.method != 'POST':
         # Данные не отправлялись; форма заполняется данными текущей записи.
-        form = TopicForm(instance=topic)
+        form = BookForm(instance=book)
     else:
-        form = TopicForm(data=request.POST, files=request.FILES, instance=topic)
+        form = BookForm(data=request.POST, files=request.FILES, instance=book)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('silk_bookmarks:topic', 
-            args=[topic_id]))
-    context = {'topic': topic, 'form': form, 'photos_url': photos_url}
-    return render(request, 'silk_bookmarks/edit_topic.html', context)
+            return HttpResponseRedirect(reverse('silk_bookmarks:book',
+                                                args=[book_id]))
+    context = {'book': book, 'form': form, 'photos_url': photos_url}
+    return render(request, 'silk_bookmarks/edit_book.html', context)
 
 @login_required
-def del_topic(request, topic_id):
-    topic = Topic.objects.get(id=topic_id)
-    check_topic_owner(request, topic.owner)
-    topic.delete()
-    return HttpResponseRedirect(reverse('silk_bookmarks:topics'))
+def del_book(request, book_id):
+    book = Book.objects.get(id=book_id)
+    check_book_owner(request, book.owner)
+    book.delete()
+    return HttpResponseRedirect(reverse('silk_bookmarks:books'))
 
 @login_required
-def del_entry(request, entry_id):
-    entry = Entry.objects.get(id=entry_id)
-    topic = entry.topic
-    topic_id = topic.id
-    check_topic_owner(request, topic.owner)
-    entry.delete()
-    return HttpResponseRedirect(reverse('silk_bookmarks:topic',
-            args=[topic_id]))
+def del_quote(request, book_id):
+    quote = Quote.objects.get(id=quote_id)
+    book = quote.book
+    book_id = book.id
+    check_book_owner(request, book.owner)
+    quote.delete()
+    return HttpResponseRedirect(reverse('silk_bookmarks:book',
+            args=[book_id]))

@@ -2,6 +2,7 @@
 
 from unsplash.api import Api
 from unsplash.auth import Auth
+<<<<<<< HEAD
 import os.path
 import json
 from django.core.exceptions import ImproperlyConfigured
@@ -20,6 +21,9 @@ def get_secret(setting):
             raise ImproperlyConfigured(error_msg)
     else:
         return os.environ[setting]
+=======
+from silk_bookmark.settings import get_secret
+>>>>>>> ce337d430a5f020493aca6dd7083b8e625deff0a
 
 #API Unsplash settings
 client_id = get_secret("client_id")

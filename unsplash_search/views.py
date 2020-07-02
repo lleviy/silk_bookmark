@@ -13,7 +13,11 @@ def search_photos(request, topic_id = None):
         try:
             search = unsplash_api.photo.random(orientation='landscape', count=12, query=q)
         except UnsplashError:
+<<<<<<< HEAD
             return render(request, 'silk_bookmarks/new_book.html', {})
+=======
+            return render(request, 'silk_bookmarks/new_topic.html', {})
+>>>>>>> ce337d430a5f020493aca6dd7083b8e625deff0a
         else:
             for photo in search:
                 photos_url.append(f'https://source.unsplash.com/{photo.id}/1600x900')

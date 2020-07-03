@@ -61,6 +61,7 @@ def book(request, book_id):
 @login_required
 def new_book(request):
     photos_url = search_photos_default()
+    appearance = Appearance.objects.filter(owner=request.user)[0]
     if request.method != 'POST':
         # Данные не отправлялись; создается пустая форма.
         form = BookForm()
@@ -72,7 +73,7 @@ def new_book(request):
             new_book.owner = request.user
             new_book.save()
             return HttpResponseRedirect(reverse('silk_bookmarks:books'))
-    context = {'form': form, 'photos_url': photos_url}
+    context = {'form': form, 'photos_url': photos_url, 'appearance': appearance}
     return render(request, 'silk_bookmarks/new_book.html', context)
 
 

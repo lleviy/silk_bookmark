@@ -34,7 +34,7 @@ class AppearanceView(LoginRequiredMixin, View):
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
-            Appearance.objects.all().delete()
+            Appearance.objects.filter(owner=request.user).delete()
             new_appearance = form.save(commit=False)
             new_appearance.owner = request.user
             new_appearance.save()

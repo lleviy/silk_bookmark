@@ -6,7 +6,11 @@
 {% endblock header %}
 
 {% block content %}
-<div class="silk-theme">
+{% if appearance.photo_url %}
+<div class="silk-theme" style="background-image: url({{ appearance.photo_url }});">
+    {% else %}
+    <div class="silk-theme">
+    {% endif %}
     <div class="container-fluid">
             <div class="col-xs-0 col-md-3">
             </div>
